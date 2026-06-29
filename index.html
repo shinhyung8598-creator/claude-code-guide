@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>클로드 코드 사용법 가이드</title>
+  <style>
+    :root {
+      --neon-green:  #39ff14;
+      --neon-pink:   #ff2d78;
+      --neon-blue:   #00f0ff;
+      --neon-purple: #bf00ff;
+      --neon-yellow: #ffe600;
+      --bg:          #0a0a0a;
+      --bg-card:     #111118;
+      --border:      #1e1e2e;
+      --text:        #e0e0e0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,240,255,.025) 2px,
+        rgba(0,240,255,.025) 4px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    header {
+      border-bottom: 1px solid var(--neon-blue);
+      box-shadow: 0 0 24px var(--neon-blue), 0 0 60px rgba(0,240,255,.15);
+      padding: 2rem 0 1.6rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,.92);
+      backdrop-filter: blur(8px);
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--neon-blue);
+      text-shadow:
+        0 0 8px var(--neon-blue),
+        0 0 20px var(--neon-blue),
+        0 0 50px rgba(0,240,255,.6);
+    }
+
+    header p {
+      margin-top: .5rem;
+      font-size: .95rem;
+      color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      justify-content: center;
+      padding: 1.2rem 1rem 0;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--neon-pink);
+      border: 1px solid var(--neon-pink);
+      padding: .3rem .9rem;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      transition: all .2s;
+      text-shadow: 0 0 6px var(--neon-pink);
+      box-shadow: 0 0 6px rgba(255,45,120,.3);
+    }
+
+    nav a:hover {
+      background: var(--neon-pink);
+      color: #000;
+      text-shadow: none;
+      box-shadow: 0 0 18px var(--neon-pink), 0 0 40px rgba(255,45,120,.5);
+    }
+
+    .wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+      display: grid;
+      gap: 2.4rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 2.2rem;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow .3s, border-color .3s;
+    }
+
+    .card:hover {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 18px rgba(0,240,255,.25), inset 0 0 40px rgba(0,240,255,.04);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 12px 0 0 12px;
+      background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple));
+      box-shadow: 0 0 12px var(--neon-blue);
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px var(--neon-blue);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .section-num {
+      font-size: .75rem;
+      background: var(--neon-blue);
+      color: #000;
+      padding: .1rem .55rem;
+      border-radius: 999px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      flex-shrink: 0;
+    }
+
+    h3 {
+      font-size: 1rem;
+      color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+      margin: 1.4rem 0 .5rem;
+    }
+
+    p { margin-bottom: .8rem; }
+
+    ul, ol { padding-left: 1.4rem; margin-bottom: .8rem; }
+    li { margin-bottom: .35rem; }
+
+    strong { color: var(--neon-yellow); text-shadow: 0 0 6px rgba(255,230,0,.5); }
+    em { color: var(--neon-pink); font-style: normal; }
+
+    blockquote {
+      margin: .8rem 0;
+      padding: .7rem 1.1rem;
+      border-left: 3px solid var(--neon-purple);
+      background: rgba(191,0,255,.07);
+      border-radius: 0 8px 8px 0;
+      color: #ccc;
+      font-style: italic;
+      box-shadow: inset 0 0 20px rgba(191,0,255,.06);
+    }
+
+    code {
+      background: #0e0e1a;
+      border: 1px solid var(--neon-purple);
+      color: var(--neon-green);
+      padding: .15em .45em;
+      border-radius: 4px;
+      font-size: .88em;
+      font-family: 'Consolas', 'Courier New', monospace;
+      text-shadow: 0 0 6px var(--neon-green);
+    }
+
+    pre {
+      background: #0e0e1a;
+      border: 1px solid var(--neon-purple);
+      box-shadow: 0 0 18px rgba(191,0,255,.2);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      margin: .8rem 0;
+    }
+
+    pre code { border: none; padding: 0; font-size: .92em; background: transparent; }
+
+    table { width: 100%; border-collapse: collapse; margin: .8rem 0; font-size: .92rem; }
+
+    th {
+      background: rgba(0,240,255,.1);
+      color: var(--neon-blue);
+      text-shadow: 0 0 6px var(--neon-blue);
+      border: 1px solid rgba(0,240,255,.25);
+      padding: .65rem 1rem;
+      text-align: left;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    td { border: 1px solid var(--border); padding: .6rem 1rem; color: #ccc; }
+    tr:hover td { background: rgba(0,240,255,.04); }
+
+    a { color: var(--neon-blue); text-decoration: none; border-bottom: 1px dashed var(--neon-blue); transition: color .2s; }
+    a:hover { color: var(--neon-green); border-color: var(--neon-green); }
+
+    .card:nth-child(2n)::before  { background: linear-gradient(180deg, var(--neon-pink), var(--neon-purple)); box-shadow: 0 0 12px var(--neon-pink); }
+    .card:nth-child(3n)::before  { background: linear-gradient(180deg, var(--neon-green), var(--neon-blue)); box-shadow: 0 0 12px var(--neon-green); }
+    .card:nth-child(2n) .section-num  { background: var(--neon-pink); }
+    .card:nth-child(3n) .section-num  { background: var(--neon-green); }
+    .card:nth-child(2n) .section-title { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
+    .card:nth-child(3n) .section-title { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green); }
+
+    footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: #444; font-size: .85rem; }
+    footer span { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
+
+    @media (max-width: 600px) {
+      .card { padding: 1.4rem 1.2rem; }
+      nav a { font-size: .75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>클로드 코드 사용법 가이드</h1>
+  <p>코딩을 몰라도 괜찮아요! 이 가이드는 처음 시작하는 분을 위해 작성되었습니다.</p>
+  <nav>
+    <a href="#s1">클로드란?</a>
+    <a href="#s2">설치</a>
+    <a href="#s3">기본 사용법</a>
+    <a href="#s4">명령어</a>
+    <a href="#s5">작업 폴더</a>
+    <a href="#s6">파일 다루기</a>
+    <a href="#s7">활용 예시</a>
+    <a href="#s8">대화 팁</a>
+    <a href="#s9">알아두기</a>
+    <a href="#s10">도움받기</a>
+  </nav>
+</header>
+
+<main class="wrapper">
+
+  <section class="card" id="s1">
+    <h2 class="section-title"><span class="section-num">01</span>클로드 코드란?</h2>
+    <p>클로드 코드는 <strong>AI와 대화하면서 코딩 작업을 맡기는 도구</strong>입니다.<br/>
+    직접 코드를 짤 필요 없이, 하고 싶은 것을 말로 설명하면 AI가 대신 만들어 줍니다.</p>
+  </section>
+
+  <section class="card" id="s2">
+    <h2 class="section-title"><span class="section-num">02</span>설치 방법</h2>
+    <h3>방법 A — 데스크톱 앱 (가장 쉬움)</h3>
+    <ol>
+      <li><a href="https://claude.ai" target="_blank">claude.ai</a>에 접속해서 계정을 만드세요.</li>
+      <li>Claude Code 데스크톱 앱을 다운로드해서 설치하세요.</li>
+      <li>로그인하면 바로 사용 가능합니다.</li>
+    </ol>
+    <h3>방법 B — VS Code 확장 프로그램</h3>
+    <ol>
+      <li>VS Code를 설치합니다.</li>
+      <li>확장 프로그램 탭에서 <em>"Claude Code"</em>를 검색해서 설치합니다.</li>
+    </ol>
+    <h3>방법 C — 터미널(명령줄)로 설치</h3>
+    <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+    <blockquote>이 방법은 Node.js가 먼저 설치되어 있어야 합니다.</blockquote>
+  </section>
+
+  <section class="card" id="s3">
+    <h2 class="section-title"><span class="section-num">03</span>기본 사용법</h2>
+    <p>클로드 코드는 <strong>채팅창에 원하는 것을 입력</strong>하면 됩니다.<br/>
+    어렵게 생각하지 말고, 사람에게 부탁하듯이 말하면 됩니다.</p>
+    <h3>예시 요청</h3>
+    <ul>
+      <li><em>"파이썬으로 간단한 계산기를 만들어줘"</em></li>
+      <li><em>"이 코드에서 오류가 나는데 고쳐줘"</em></li>
+      <li><em>"index.html 파일을 읽어서 어떤 내용인지 설명해줘"</em></li>
+      <li><em>"폴더 안에 있는 파일 목록을 보여줘"</em></li>
+    </ul>
+  </section>
+
+  <section class="card" id="s4">
+    <h2 class="section-title"><span class="section-num">04</span>자주 쓰는 슬래시 명령어</h2>
+    <p>채팅창에 <code>/</code>를 입력하면 특별한 명령어를 사용할 수 있습니다.</p>
+    <table>
+      <thead><tr><th>명령어</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td><code>/help</code></td><td>도움말 보기</td></tr>
+        <tr><td><code>/clear</code></td><td>대화 내용 초기화</td></tr>
+        <tr><td><code>/config</code></td><td>설정 변경</td></tr>
+        <tr><td><code>/code-review</code></td><td>코드 검토 요청</td></tr>
+        <tr><td><code>/run</code></td><td>앱 실행</td></tr>
+      </tbody>
+    </table>
+    <blockquote>채팅창에 <code>/help</code> 라고 입력하고 엔터를 누르면 됩니다.</blockquote>
+  </section>
+
+  <section class="card" id="s5">
+    <h2 class="section-title"><span class="section-num">05</span>작업 폴더 지정하기</h2>
+    <p>클로드 코드는 <strong>내가 작업하는 폴더를 기준</strong>으로 파일을 읽고 수정합니다.</p>
+    <ul>
+      <li>앱을 실행할 때 작업하고 싶은 폴더를 열어두면 됩니다.</li>
+      <li><em>"이 폴더에서 작업해줘"</em> 라고 말해도 됩니다.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s6">
+    <h2 class="section-title"><span class="section-num">06</span>파일 다루기</h2>
+    <h3>파일 읽기</h3>
+    <blockquote>"project 폴더 안에 있는 main.py 파일을 읽어줘"</blockquote>
+    <h3>파일 만들기</h3>
+    <blockquote>"Hello World를 출력하는 파이썬 파일을 만들어줘"</blockquote>
+    <h3>파일 수정하기</h3>
+    <blockquote>"index.html의 제목을 '내 첫 번째 웹사이트'로 바꿔줘"</blockquote>
+  </section>
+
+  <section class="card" id="s7">
+    <h2 class="section-title"><span class="section-num">07</span>유용한 활용 예시</h2>
+    <h3>웹사이트 만들기</h3>
+    <blockquote>"간단한 포트폴리오 웹페이지를 HTML로 만들어줘. 내 이름은 홍길동이고, 소개 문구도 넣어줘."</blockquote>
+    <h3>자동화 스크립트 만들기</h3>
+    <blockquote>"특정 폴더의 사진 파일 이름을 날짜 순서대로 바꿔주는 프로그램을 만들어줘"</blockquote>
+    <h3>오류 해결하기</h3>
+    <blockquote>"이 오류 메시지가 뭔 뜻이야? 어떻게 고쳐?" (오류 내용을 붙여넣기)</blockquote>
+    <h3>코드 설명 듣기</h3>
+    <blockquote>"이 코드가 어떻게 동작하는지 초등학생도 이해할 수 있게 설명해줘"</blockquote>
+  </section>
+
+  <section class="card" id="s8">
+    <h2 class="section-title"><span class="section-num">08</span>대화할 때 팁</h2>
+    <table>
+      <thead><tr><th>잘 되는 방식</th><th>피해야 할 방식</th></tr></thead>
+      <tbody>
+        <tr><td>구체적으로 설명하기</td><td>너무 막연하게 말하기</td></tr>
+        <tr><td>원하는 결과물 설명하기</td><td>과정만 말하기</td></tr>
+        <tr><td>모르는 것은 그냥 물어보기</td><td>혼자 추측하기</td></tr>
+      </tbody>
+    </table>
+    <h3>좋은 요청 예시</h3>
+    <blockquote>"파이썬으로 숫자를 입력하면 짝수인지 홀수인지 알려주는 프로그램을 만들어줘. 파일 이름은 check.py로 해줘."</blockquote>
+    <h3>아쉬운 요청 예시</h3>
+    <blockquote>"프로그램 만들어줘."</blockquote>
+  </section>
+
+  <section class="card" id="s9">
+    <h2 class="section-title"><span class="section-num">09</span>알아두면 좋은 것들</h2>
+    <ul>
+      <li><strong>실수해도 괜찮아요.</strong> 잘못됐다 싶으면 <em>"아니야, 다시 해줘"</em> 라고 하면 됩니다.</li>
+      <li><strong>이전 대화를 기억해요.</strong> 같은 대화 안에서는 앞서 한 얘기를 기억합니다.</li>
+      <li><strong>파일을 직접 수정해요.</strong> 클로드 코드는 실제 파일을 바꾸니까, 중요한 파일은 백업해두세요.</li>
+      <li><strong>모르는 단어가 나오면 물어보세요.</strong> <em>"방금 한 말에서 ○○○이 뭐야?"</em> 라고 바로 물어보면 됩니다.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s10">
+    <h2 class="section-title"><span class="section-num">10</span>도움받기</h2>
+    <ul>
+      <li>공식 문서: <a href="https://claude.ai/code" target="_blank">claude.ai/code</a></li>
+      <li>문제가 생기면: <a href="https://github.com/anthropics/claude-code/issues" target="_blank">GitHub 이슈</a></li>
+    </ul>
+    <blockquote style="margin-top:1.2rem">
+      <strong>기억하세요:</strong> 코딩을 몰라도 됩니다. 하고 싶은 것을 말로 표현할 수 있으면 충분합니다!
+    </blockquote>
+  </section>
+
+</main>
+
+<footer>
+  Made with <span>♥</span> using Claude Code
+</footer>
+
+</body>
+</html>
