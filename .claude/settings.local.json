@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm install -g @anthropic-ai/claude-code)",
+      "PowerShell(npm --version)"
+    ]
+  }
+}
