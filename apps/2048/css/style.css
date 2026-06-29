@@ -1,0 +1,323 @@
+/* ===== CSS 변수 (라이트 모드) ===== */
+:root {
+  --bg: #faf8ef;
+  --grid-bg: #bbada0;
+  --cell-bg: #cdc1b4;
+  --text: #776e65;
+  --text-light: #f9f6f2;
+  --text-muted: #9e8d7e;
+  --accent: #8f7a66;
+  --btn-bg: #8f7a66;
+  --btn-text: #f9f6f2;
+  --overlay-bg: rgba(238, 228, 218, 0.73);
+  --score-bg: #bbada0;
+  --score-text: #f9f6f2;
+  --score-label: #eee4da;
+}
+
+/* 다크 모드 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a2e;
+    --grid-bg: #2a2a3e;
+    --cell-bg: #3a3a4e;
+    --text: #e0d5cc;
+    --text-light: #f9f6f2;
+    --text-muted: #9a9ab0;
+    --accent: #60a5fa;
+    --btn-bg: #4a4a6e;
+    --btn-text: #f9f6f2;
+    --overlay-bg: rgba(26, 26, 46, 0.80);
+    --score-bg: #2a2a3e;
+    --score-text: #f9f6f2;
+    --score-label: #9a9ab0;
+  }
+}
+
+[data-theme='dark'] {
+  --bg: #1a1a2e;
+  --grid-bg: #2a2a3e;
+  --cell-bg: #3a3a4e;
+  --text: #e0d5cc;
+  --text-light: #f9f6f2;
+  --text-muted: #9a9ab0;
+  --accent: #60a5fa;
+  --btn-bg: #4a4a6e;
+  --btn-text: #f9f6f2;
+  --overlay-bg: rgba(26, 26, 46, 0.80);
+  --score-bg: #2a2a3e;
+  --score-text: #f9f6f2;
+  --score-label: #9a9ab0;
+}
+
+[data-theme='light'] {
+  --bg: #faf8ef;
+  --grid-bg: #bbada0;
+  --cell-bg: #cdc1b4;
+  --text: #776e65;
+  --text-light: #f9f6f2;
+  --text-muted: #9e8d7e;
+  --accent: #8f7a66;
+  --btn-bg: #8f7a66;
+  --btn-text: #f9f6f2;
+  --overlay-bg: rgba(238, 228, 218, 0.73);
+  --score-bg: #bbada0;
+  --score-text: #f9f6f2;
+  --score-label: #eee4da;
+}
+
+/* ===== 리셋 & 기본 ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ===== 레이아웃 ===== */
+.container {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ===== 헤더 ===== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.scores {
+  display: flex;
+  gap: 8px;
+}
+
+.score-box {
+  background: var(--score-bg);
+  border-radius: 6px;
+  padding: 8px 16px;
+  text-align: center;
+  min-width: 72px;
+}
+
+.score-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--score-label);
+}
+
+.score-value {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--score-text);
+}
+
+/* ===== 컨트롤 ===== */
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:active {
+  opacity: 0.7;
+}
+
+.btn-icon {
+  padding: 10px 14px;
+  font-size: 1.1rem;
+}
+
+/* ===== 그리드 ===== */
+.grid-wrapper {
+  position: relative;
+  background: var(--grid-bg);
+  border-radius: 8px;
+  padding: 12px;
+  touch-action: none;
+  user-select: none;
+}
+
+.grid-bg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.cell-bg {
+  background: var(--cell-bg);
+  border-radius: 6px;
+  aspect-ratio: 1 / 1;
+}
+
+/* ===== 타일 레이어 ===== */
+.tiles {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  pointer-events: none;
+}
+
+/* ===== 개별 타일 ===== */
+.tile {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--text);
+  animation: tile-appear 150ms ease-out both;
+  aspect-ratio: 1 / 1;
+}
+
+/* 4자리 */
+.tile[data-val='1024'],
+.tile[data-val='2048'] {
+  font-size: 1.5rem;
+}
+
+/* 5자리+ */
+.tile.large-num {
+  font-size: 1.1rem;
+}
+
+@keyframes tile-appear {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    animation: none;
+  }
+}
+
+/* ===== 타일 색상 ===== */
+.tile[data-val='2']    { background: #eee4da; color: #776e65; }
+.tile[data-val='4']    { background: #ede0c8; color: #776e65; }
+.tile[data-val='8']    { background: #f2b179; color: #f9f6f2; }
+.tile[data-val='16']   { background: #f59563; color: #f9f6f2; }
+.tile[data-val='32']   { background: #f67c5f; color: #f9f6f2; }
+.tile[data-val='64']   { background: #f65e3b; color: #f9f6f2; }
+.tile[data-val='128']  { background: #edcf72; color: #f9f6f2; }
+.tile[data-val='256']  { background: #edcc61; color: #f9f6f2; }
+.tile[data-val='512']  { background: #edc850; color: #f9f6f2; }
+.tile[data-val='1024'] { background: #edc53f; color: #f9f6f2; }
+.tile[data-val='2048'] { background: #edc22e; color: #f9f6f2; }
+.tile.super            { background: #3c3a32; color: #f9f6f2; }
+
+/* ===== 오버레이 ===== */
+.overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.overlay-msg {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* ===== 힌트 ===== */
+.hint {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 16px;
+}
+
+/* ===== 모바일 ===== */
+@media (max-width: 480px) {
+  body {
+    padding: 16px 12px;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .score-box {
+    padding: 6px 10px;
+    min-width: 60px;
+  }
+
+  .score-value {
+    font-size: 1rem;
+  }
+
+  .tile {
+    font-size: 1.4rem;
+  }
+
+  .tile[data-val='1024'],
+  .tile[data-val='2048'] {
+    font-size: 1.1rem;
+  }
+
+  .tile.large-num {
+    font-size: 0.85rem;
+  }
+}
