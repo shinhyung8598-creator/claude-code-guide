@@ -28,7 +28,9 @@
       "PowerShell(git reset --hard*)",
       "PowerShell(Remove-Item*-Recurse*)",
       "PowerShell(Remove-Item*-Force*)",
-      "PowerShell(rd *-Recurse*)"
+      "PowerShell(rd *-Recurse*)",
+      "Edit(.claude/settings.local.json)",
+      "Write(.claude/settings.local.json)"
     ]
   }
 }
